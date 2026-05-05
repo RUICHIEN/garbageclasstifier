@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>垃圾分類辨識器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>垃圾分類辨識器</h1>
+        <p>上傳一張圖片來辨識它是什麼類型的垃圾</p>
+        
+        <div class="upload-section">
+            <input type="file" id="imageInput" accept="image/*">
+            <label for="imageInput" class="upload-btn">選擇圖片</label>
+        </div>
+        
+        <div class="image-preview">
+            <img id="previewImage" alt="預覽圖片" style="display: none;">
+        </div>
+        
+        <div class="result-section">
+            <button id="predictBtn" disabled>辨識</button>
+            <button id="cameraBtn">開啟鏡頭</button>
+            <div id="result" class="result"></div>
+        </div>
+        
+        <div class="camera-section" style="display: none;">
+            <h3>即時辨識</h3>
+            <video id="cameraVideo" autoplay playsinline muted></video>
+            <p>將鏡頭對準物品進行即時辨識</p>
+        </div>
+        
+        <div class="loading" id="loading" style="display: none;">
+            <p>正在載入模型...</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
