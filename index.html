@@ -4,34 +4,236 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>垃圾分類辨識器</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 2.5em;
+}
+
+p {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.upload-section {
+    margin-bottom: 30px;
+}
+
+#imageInput {
+    display: none;
+}
+
+.upload-btn {
+    background: #4CAF50;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    display: inline-block;
+    transition: background 0.3s;
+}
+
+.upload-btn:hover {
+    background: #45a049;
+}
+
+.image-preview {
+    margin-bottom: 30px;
+}
+
+#previewImage {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+.result-section {
+    margin-top: 30px;
+}
+
+#predictBtn {
+    background: #2196F3;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background 0.3s;
+    margin-bottom: 20px;
+}
+
+#predictBtn:hover:not(:disabled) {
+    background: #1976D2;
+}
+
+#predictBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+#cameraBtn {
+    background: #FF9800;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background 0.3s;
+    margin-left: 10px;
+}
+
+#cameraBtn:hover:not(:disabled) {
+    background: #F57C00;
+}
+
+.result {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.predictions {
+    width: 100%;
+    max-width: 400px;
+}
+
+.prediction-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+
+.class-name {
+    width: 80px;
+    font-weight: bold;
+    color: #333;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    margin: 0 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.probability {
+    width: 60px;
+    text-align: right;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.camera-section {
+    margin-top: 30px;
+    text-align: center;
+}
+
+#cameraVideo {
+    width: 100%;
+    max-width: 640px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.camera-section p {
+    margin-top: 10px;
+    color: #666;
+    font-size: 1em;
+}
+
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading p {
+    color: white;
+    font-size: 1.5em;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+}
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>垃圾分類辨識器</h1>
         <p>上傳一張圖片來辨識它是什麼類型的垃圾</p>
-        
+
         <div class="upload-section">
             <input type="file" id="imageInput" accept="image/*">
             <label for="imageInput" class="upload-btn">選擇圖片</label>
         </div>
-        
+
         <div class="image-preview">
             <img id="previewImage" alt="預覽圖片" style="display: none;">
         </div>
-        
+
         <div class="result-section">
             <button id="predictBtn" disabled>辨識</button>
             <button id="cameraBtn">開啟鏡頭</button>
             <div id="result" class="result"></div>
         </div>
-        
+
         <div class="camera-section" style="display: none;">
             <h3>即時辨識</h3>
             <video id="cameraVideo" autoplay playsinline muted></video>
             <p>將鏡頭對準物品進行即時辨識</p>
         </div>
-        
+
         <div class="loading" id="loading" style="display: none;">
             <p>正在載入模型...</p>
         </div>
@@ -39,6 +241,203 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+// 載入模型
+let model;
+
+async function loadModel() {
+    const loading = document.getElementById('loading');
+    loading.style.display = 'flex';
+
+    try {
+        model = await tmImage.load('./model.json', './metadata.json');
+        console.log('模型載入成功');
+    } catch (error) {
+        console.error('模型載入失敗:', error);
+        alert('模型載入失敗，請檢查檔案是否存在');
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+// 初始化
+document.addEventListener('DOMContentLoaded', function() {
+    loadModel();
+
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+    const predictBtn = document.getElementById('predictBtn');
+    const resultDiv = document.getElementById('result');
+
+    // 圖片上傳處理
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                predictBtn.disabled = false;
+                resultDiv.textContent = '';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // 預測按鈕
+    predictBtn.addEventListener('click', async function() {
+        if (!model) {
+            alert('模型尚未載入完成');
+            return;
+        }
+
+        if (!previewImage.src) {
+            alert('請先選擇圖片');
+            return;
+        }
+
+        predictBtn.disabled = true;
+        predictBtn.textContent = '辨識中...';
+
+        try {
+            // 進行預測
+            const predictions = await model.predict(previewImage);
+
+            // 顯示所有分類的結果
+            displayPredictions(predictions);
+
+        } catch (error) {
+            console.error('預測失敗:', error);
+            resultDiv.innerHTML = '<p style="color: red;">辨識失敗，請重試</p>';
+        } finally {
+            predictBtn.disabled = false;
+            predictBtn.textContent = '辨識';
+        }
+    });
+});
+
+// 顯示預測結果
+function displayPredictions(predictions) {
+    const resultDiv = document.getElementById('result');
+
+    // 按機率排序
+    predictions.sort((a, b) => b.probability - a.probability);
+
+    let html = '<h3>辨識結果：</h3><div class="predictions">';
+    predictions.forEach(prediction => {
+        const probability = (prediction.probability * 100).toFixed(2);
+        const percentage = prediction.probability * 100;
+        html += `
+            <div class="prediction-item">
+                <span class="class-name">${prediction.className}</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+                <span class="probability">${probability}%</span>
+            </div>
+        `;
+    });
+    html += '</div>';
+
+    resultDiv.innerHTML = html;
+}
+
+// 鏡頭功能變數
+let videoStream = null;
+let isCameraActive = false;
+
+// 鏡頭按鈕事件
+document.getElementById('cameraBtn').addEventListener('click', toggleCamera);
+
+// 切換鏡頭
+async function toggleCamera() {
+    const cameraBtn = document.getElementById('cameraBtn');
+    const videoElement = document.getElementById('cameraVideo');
+    const cameraSection = document.querySelector('.camera-section');
+
+    if (isCameraActive) {
+        // 關閉鏡頭
+        stopCamera();
+        cameraBtn.textContent = '開啟鏡頭';
+        cameraSection.style.display = 'none';
+    } else {
+        // 開啟鏡頭
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: 640,
+                    height: 480,
+                    facingMode: 'environment' // 使用後置鏡頭
+                }
+            });
+
+            videoElement.srcObject = stream;
+            videoStream = stream;
+            isCameraActive = true;
+            cameraBtn.textContent = '關閉鏡頭';
+            cameraSection.style.display = 'block';
+
+            // 開始實時辨識
+            startRealTimePrediction();
+
+        } catch (error) {
+            console.error('無法訪問鏡頭:', error);
+            alert('無法訪問鏡頭，請確保已授權相機權限');
+        }
+    }
+}
+
+// 停止鏡頭
+function stopCamera() {
+    if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+        videoStream = null;
+    }
+    isCameraActive = false;
+
+    // 停止實時辨識
+    if (realTimeInterval) {
+        clearInterval(realTimeInterval);
+        realTimeInterval = null;
+    }
+}
+
+// 實時辨識
+let realTimeInterval = null;
+
+function startRealTimePrediction() {
+    if (!model) return;
+
+    const videoElement = document.getElementById('cameraVideo');
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = 224; // 模型期望的輸入大小
+    canvas.height = 224;
+
+    realTimeInterval = setInterval(async () => {
+        if (!isCameraActive || !model) return;
+
+        try {
+            // 從視頻捕獲圖像
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            // 進行預測
+            const predictions = await model.predict(canvas);
+
+            // 顯示結果
+            displayPredictions(predictions);
+
+        } catch (error) {
+            console.error('實時辨識失敗:', error);
+        }
+    }, 1000); // 每秒更新一次
+}
+
+// 頁面卸載時清理資源
+window.addEventListener('beforeunload', () => {
+    stopCamera();
+});
+    </script>
 </body>
 </html>

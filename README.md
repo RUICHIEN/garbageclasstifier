@@ -2,6 +2,43 @@
 
 一個使用 TensorFlow.js 和 Teachable Machine 構建的前端圖片辨識應用，用於辨識不同類型的垃圾。
 
+## 🚀 部署到 GitHub Pages
+
+### 自動部署（推薦）：
+
+1. **使用部署腳本**：
+   ```bash
+   # 給腳本執行權限
+   chmod +x deploy.sh
+   
+   # 運行部署腳本（替換為你的倉庫 URL）
+   ./deploy.sh https://github.com/你的用戶名/倉庫名稱.git
+   ```
+
+2. **在 GitHub 上啟用 Pages**：
+   - 進入倉庫的 Settings 頁面
+   - 找到 Pages 區塊
+   - 將 Source 設定為 "Deploy from a branch"
+   - 選擇 main 分支和根目錄 (/)
+   - 儲存設定
+
+### 手動部署：
+
+1. **上傳檔案到 GitHub**：
+   - 將 `index.html`、`model.json`、`metadata.json`、`weights.bin` 上傳到你的 GitHub 倉庫
+   - 確保所有檔案都在倉庫的根目錄
+
+2. **啟用 GitHub Pages**：
+   - 進入倉庫的 Settings 頁面
+   - 找到 Pages 區塊
+   - 將 Source 設定為 "Deploy from a branch"
+   - 選擇 main 分支和根目錄 (/)
+   - 儲存設定
+
+3. **訪問應用**：
+   - GitHub Pages 會自動部署
+   - 訪問 URL：`https://你的用戶名.github.io/倉庫名稱/`
+
 ## 功能特點
 
 - 📸 上傳圖片進行辨識
@@ -19,35 +56,34 @@
 - 紙張 (paper)
 - 塑膠 (plastic)
 
-## 如何使用
+## 本地開發
 
-1. 啟動本地服務器：
-   ```bash
-   cd /workspaces/garbageclasstifier
-   python3 -m http.server 8000
-   ```
+如果你想在本地開發：
 
-2. 在瀏覽器中打開 `http://localhost:8000`
+```bash
+# 啟動本地服務器
+python3 -m http.server 8000
 
-3. **圖片辨識**：
-   - 點擊「選擇圖片」按鈕上傳圖片
-   - 點擊「辨識」按鈕查看所有分類的預測比重
+# 在瀏覽器中訪問
+http://localhost:8000
+```
 
-4. **即時辨識**：
-   - 點擊「開啟鏡頭」按鈕
-   - 允許瀏覽器訪問相機
-   - 將鏡頭對準物品即可看到實時辨識結果
+## 檔案結構
+
+```
+your-repo/
+├── index.html          # 主頁面（包含內嵌的 CSS 和 JS）
+├── model.json          # 模型配置
+├── metadata.json       # 模型元數據
+└── weights.bin         # 模型權重
+```
 
 ## 注意事項
 
-- 即時辨識功能需要相機權限
+- 所有資源都內嵌在單一的 HTML 文件中，適合 GitHub Pages 部署
+- 模型檔案 (model.json, metadata.json, weights.bin) 必須與 index.html 在同一目錄
+- 即時辨識功能需要 HTTPS 或 localhost 環境
 - 建議使用現代瀏覽器以獲得最佳體驗
-- 在手機上使用時，會優先使用後置鏡頭
-
-## 技術棧
-
-- HTML5
-- CSS3
 - JavaScript (ES6+)
 - TensorFlow.js
 - Teachable Machine Image Model
